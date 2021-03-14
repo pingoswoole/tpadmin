@@ -1,20 +1,12 @@
 <?php
 
-// +----------------------------------------------------------------------
-// | EasyAdmin
-// +----------------------------------------------------------------------
-// | PHP交流群: 763822524
-// +----------------------------------------------------------------------
-// | 开源协议  https://mit-license.org 
-// +----------------------------------------------------------------------
-// | github开源项目：https://github.com/zhongshaofa/EasyAdmin
-// +----------------------------------------------------------------------
+// 快速开发框架  @pingo
 
 namespace app\admin\controller;
 
 
 use app\admin\model\SystemAdmin;
-use app\common\controller\AdminController;
+use app\admin\base\AdminController;
 use think\captcha\facade\Captcha;
 use think\facade\Env;
 

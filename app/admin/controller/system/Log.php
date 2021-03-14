@@ -3,7 +3,7 @@
 namespace app\admin\controller\system;
 
 use app\admin\model\SystemLog;
-use app\common\controller\AdminController;
+use app\admin\base\AdminController;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;
@@ -20,7 +20,7 @@ class Log extends AdminController
         parent::__construct($app);
         $this->model = new SystemLog();
     }
-
+   
     /**
      * @NodeAnotation(title="列表")
      */

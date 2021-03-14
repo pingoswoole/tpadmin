@@ -1,13 +1,6 @@
 <?php
 
-// +----------------------------------------------------------------------
-// | EasyAdmin
-// +----------------------------------------------------------------------
-// | PHP交流群: 763822524
-// +----------------------------------------------------------------------
-// | 开源协议  https://mit-license.org
-// +----------------------------------------------------------------------
-// | github开源项目：https://github.com/zhongshaofa/EasyAdmin
+
 // +----------------------------------------------------------------------
 
 namespace app\admin\controller\system;
@@ -15,7 +8,7 @@ namespace app\admin\controller\system;
 use app\admin\model\SystemAuth;
 use app\admin\model\SystemAuthNode;
 use app\admin\service\TriggerService;
-use app\common\controller\AdminController;
+use app\admin\base\AdminController;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;

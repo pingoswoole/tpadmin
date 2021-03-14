@@ -1,20 +1,13 @@
 <?php
 
-// +----------------------------------------------------------------------
-// | EasyAdmin
-// +----------------------------------------------------------------------
-// | PHP交流群: 763822524
-// +----------------------------------------------------------------------
-// | 开源协议  https://mit-license.org
-// +----------------------------------------------------------------------
-// | github开源项目：https://github.com/zhongshaofa/EasyAdmin
+
 // +----------------------------------------------------------------------
 
 namespace app\admin\controller;
 
 use app\admin\model\SystemUploadfile;
-use app\common\controller\AdminController;
-use app\common\service\MenuService;
+use app\admin\base\AdminController;
+use app\admin\service\MenuService;
 use EasyAdminCmd\upload\Uploadfile;
 use think\db\Query;
 use think\facade\Cache;

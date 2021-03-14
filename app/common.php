@@ -1,7 +1,7 @@
 <?php
 // 应用公共文件
 
-use app\common\service\AuthService;
+use app\admin\service\AuthService;
 use think\facade\Cache;
 
 if (!function_exists('__url')) {

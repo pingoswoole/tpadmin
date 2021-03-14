@@ -5,7 +5,7 @@ namespace app\admin\controller;
 
 use app\admin\model\SystemAdmin;
 use app\admin\model\SystemQuick;
-use app\common\controller\AdminController;
+use app\admin\base\AdminController;
 use think\App;
 use think\facade\Env;
 

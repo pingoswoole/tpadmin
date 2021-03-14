@@ -5,7 +5,7 @@ namespace app\admin\controller\mall;
 
 use app\admin\model\MallGoods;
 use app\admin\traits\Curd;
-use app\common\controller\AdminController;
+use app\admin\base\AdminController;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;
