@@ -29,9 +29,10 @@ class SystemLog
     {
         if ($request->isAjax()) {
             $method = strtolower($request->method());
+            $request_server = $request->server();
             if (in_array($method, ['post', 'put', 'delete'])) {
                 $url = $request->url();
-                $ip = CommonTool::getRealIp();
+                $ip = $request_server['REMOTE_ADDR'];
                 $params = $request->param();
                 if (isset($params['s'])) {
                     unset($params['s']);
@@ -45,7 +46,7 @@ class SystemLog
                     'method'      => $method,
                     'ip'          => $ip,
                     'content'     => json_encode($params, JSON_UNESCAPED_UNICODE),
-                    'useragent'   => $_SERVER['HTTP_USER_AGENT'],
+                    'useragent'   => $request_server['HTTP_USER_AGENT'],
                     'create_time' => time(),
                 ];
                 SystemLogService::instance()->save($data);
