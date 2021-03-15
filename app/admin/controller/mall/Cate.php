@@ -6,6 +6,7 @@ namespace app\admin\controller\mall;
 use app\admin\model\MallCate;
 use app\admin\traits\Curd;
 use app\admin\base\AdminController;
+use app\admin\logic\mall\CateLogic;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;
@@ -22,6 +23,7 @@ class Cate extends AdminController
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->model = new MallCate();
+        //$this->model = new MallCate();
+        $this->logic = new CateLogic;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\logic;
+namespace app\admin\logic\mall;
 
 use app\admin\base\BaseLogic;
 
@@ -9,5 +9,4 @@ use app\admin\base\BaseLogic;
  */
 class GoodsLogic extends BaseLogic
 {
-    
 }

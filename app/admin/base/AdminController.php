@@ -19,6 +19,14 @@ class AdminController extends BaseController
 {
     use \app\common\traits\JumpTrait;
 
+
+    /**
+     *
+     *  当前逻辑
+     * @var [type]
+     */
+    protected $logic;
+
     /**
      * 当前模型
      * @Model

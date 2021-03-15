@@ -53,7 +53,9 @@ class AdminLogic extends BaseLogic
     public function isLogin()
     {
         $adminId = session('admin.id');
-        if(empty($adminId)) return false;
+        if (empty($adminId)) {
+            return false;
+        }
         return  true;
     }
 
@@ -67,5 +69,4 @@ class AdminLogic extends BaseLogic
         session('admin', null);
         return true;
     }
-
 }

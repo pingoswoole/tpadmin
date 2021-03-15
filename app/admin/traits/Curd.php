@@ -26,23 +26,10 @@ trait Curd
     {
         if ($this->request->isAjax()) {
             if (input('selectFields')) {
-                return $this->selectList();
+                return $this->logic->selectList();
             }
             list($page, $limit, $where) = $this->buildTableParames();
-            $count = $this->model
-                ->where($where)
-                ->count();
-            $list = $this->model
-                ->where($where)
-                ->page($page, $limit)
-                ->order($this->sort)
-                ->select();
-            $data = [
-                'code'  => 0,
-                'msg'   => '',
-                'count' => $count,
-                'data'  => $list,
-            ];
+            $data = $this->logic->getPageList($page, $limit, $where, $this->sort);
             return json($data);
         }
         return $this->fetch();
@@ -57,12 +44,12 @@ trait Curd
             $post = $this->request->post();
             $rule = [];
             $this->validate($post, $rule);
-            try {
-                $save = $this->model->save($post);
-            } catch (\Exception $e) {
-                $this->error('保存失败:'.$e->getMessage());
+            $result = $this->logic->add($post);
+            if ($result['flag']) {
+                $this->success($result['msg']);
+            } else {
+                $this->error($result['msg']);
             }
-            $save ? $this->success('保存成功') : $this->error('保存失败');
         }
         return $this->fetch();
     }
@@ -72,19 +59,19 @@ trait Curd
      */
     public function edit($id)
     {
-        $row = $this->model->find($id);
-        empty($row) && $this->error('数据不存在');
         if ($this->request->isAjax()) {
             $post = $this->request->post();
             $rule = [];
             $this->validate($post, $rule);
-            try {
-                $save = $row->save($post);
-            } catch (\Exception $e) {
-                $this->error('保存失败');
+            $result = $this->logic->edit($id, $post);
+            if ($result) {
+                $this->success($result['msg']);
+            } else {
+                $this->error($result['msg']);
             }
-            $save ? $this->success('保存成功') : $this->error('保存失败');
         }
+        $row = $this->logic->getItem($id);
+        empty($row) && $this->error('数据不存在');
         $this->assign('row', $row);
         return $this->fetch();
     }
@@ -94,14 +81,12 @@ trait Curd
      */
     public function delete($id)
     {
-        $row = $this->model->whereIn('id', $id)->select();
-        $row->isEmpty() && $this->error('数据不存在');
-        try {
-            $save = $row->delete();
-        } catch (\Exception $e) {
-            $this->error('删除失败');
+        $result = $this->logic->delete($id);
+        if ($result) {
+            $this->success($result['msg']);
+        } else {
+            $this->error($result['msg']);
         }
-        $save ? $this->success('删除成功') : $this->error('删除失败');
     }
 
     /**
@@ -110,25 +95,7 @@ trait Curd
     public function export()
     {
         list($page, $limit, $where) = $this->buildTableParames();
-        $tableName = $this->model->getName();
-        $tableName = CommonTool::humpToLine(lcfirst($tableName));
-        $prefix = config('database.connections.mysql.prefix');
-        $dbList = Db::query("show full columns from {$prefix}{$tableName}");
-        $header = [];
-        foreach ($dbList as $vo) {
-            $comment = !empty($vo['Comment']) ? $vo['Comment'] : $vo['Field'];
-            if (!in_array($vo['Field'], $this->noExportFields)) {
-                $header[] = [$comment, $vo['Field']];
-            }
-        }
-        $list = $this->model
-            ->where($where)
-            ->limit(100000)
-            ->order('id', 'desc')
-            ->select()
-            ->toArray();
-        $fileName = time();
-        return Excel::exportData($list, $header, $fileName, 'xlsx');
+        return  $this->logic->export($page, $limit, $where);
     }
 
     /**
@@ -143,20 +110,14 @@ trait Curd
             'value|值'  => 'require',
         ];
         $this->validate($post, $rule);
-        $row = $this->model->find($post['id']);
-        if (!$row) {
-            $this->error('数据不存在');
-        }
         if (!in_array($post['field'], $this->allowModifyFields)) {
             $this->error('该字段不允许修改：' . $post['field']);
         }
-        try {
-            $row->save([
-                $post['field'] => $post['value'],
-            ]);
-        } catch (\Exception $e) {
-            $this->error($e->getMessage());
+        $result = $this->logic->modify($post['id'], [$post['field'] => $post['value']]);
+        if ($result) {
+            $this->success($result['msg']);
+        } else {
+            $this->error($result['msg']);
         }
-        $this->success('保存成功');
     }
 }
