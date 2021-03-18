@@ -31,7 +31,9 @@
         "qiniu/php-sdk": "^7.2",
         "alibabacloud/client": "^1.5",
         "phpoffice/phpspreadsheet": "^1.0",
-        "pingoswoole/easyadmincmd": "^1.0"
+        "pingoswoole/easyadmincmd": "^1.0",
+        "overtrue/wechat": "~4.0",
+        "yansongda/pay": "^2.10"
 
     },
     "require-dev": {

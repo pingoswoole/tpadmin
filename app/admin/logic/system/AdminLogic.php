@@ -108,4 +108,21 @@ class AdminLogic extends BaseLogic
     {
         return $this->model->getAuthList();
     }
+
+    public function editAdmin($where, $data):bool
+    {
+        try {
+            //code...
+            $row = $this->model
+                ->where($where)
+                ->find();
+            $res = $row->allowField(['head_img', 'phone', 'remark', 'update_time'])
+                ->save($data);
+            return $res ? true : false;
+        } catch (\Throwable $th) {
+            //throw $th;
+            var_dump($th->getMessage());
+        }
+        return false;
+    }
 }

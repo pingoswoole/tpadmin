@@ -4,3 +4,5 @@
 *.log
 .env
 /runtime
+/public/storage
+/public/upload
