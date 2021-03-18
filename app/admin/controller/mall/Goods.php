@@ -6,6 +6,7 @@ namespace app\admin\controller\mall;
 use app\admin\model\MallGoods;
 use app\admin\traits\Curd;
 use app\admin\base\AdminController;
+use app\admin\logic\mall\GoodsLogic;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;
@@ -24,7 +25,7 @@ class Goods extends AdminController
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->model = new MallGoods();
+        $this->logic = new GoodsLogic;
     }
 
     /**
@@ -37,22 +38,7 @@ class Goods extends AdminController
                 return $this->selectList();
             }
             list($page, $limit, $where) = $this->buildTableParames();
-            $count = $this->model
-                ->withJoin('cate', 'LEFT')
-                ->where($where)
-                ->count();
-            $list = $this->model
-                ->withJoin('cate', 'LEFT')
-                ->where($where)
-                ->page($page, $limit)
-                ->order($this->sort)
-                ->select();
-            $data = [
-                'code'  => 0,
-                'msg'   => '',
-                'count' => $count,
-                'data'  => $list,
-            ];
+            $data = $this->logic->getPageList($page, $limit, $where);
             return json($data);
         }
         return $this->fetch();

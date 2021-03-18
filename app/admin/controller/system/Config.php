@@ -8,6 +8,7 @@ namespace app\admin\controller\system;
 use app\admin\model\SystemConfig;
 use app\admin\service\TriggerService;
 use app\admin\base\AdminController;
+use app\admin\logic\system\ConfigLogic;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;
@@ -22,7 +23,7 @@ class Config extends AdminController
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->model = new SystemConfig();
+        $this->logic = new ConfigLogic;
     }
 
     /**
@@ -41,11 +42,7 @@ class Config extends AdminController
         $post = $this->request->post();
         try {
             foreach ($post as $key => $val) {
-                $this->model
-                    ->where('name', $key)
-                    ->update([
-                        'value' => $val,
-                    ]);
+                $this->logic->modify(['name' => $key], ['value' => $val]);
             }
             TriggerService::updateMenu();
             TriggerService::updateSysconfig();

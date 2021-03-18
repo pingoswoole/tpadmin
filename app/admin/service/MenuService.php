@@ -4,7 +4,7 @@
 
 namespace app\admin\service;
 
-use app\common\constants\MenuConstant;
+use app\admin\constants\MenuConstant;
 use think\facade\Db;
 
 class MenuService
@@ -51,7 +51,7 @@ class MenuService
     {
         /** @var AuthService $authService */
         $authServer = app(AuthService::class, ['adminId' => $this->adminId]);
-        return $this->buildMenuChild(0, $this->getMenuData(),$authServer);
+        return $this->buildMenuChild(0, $this->getMenuData(), $authServer);
     }
 
     private function buildMenuChild($pid, $menuList, AuthService $authServer)
@@ -97,5 +97,4 @@ class MenuService
             ->select();
         return $menuData;
     }
-
 }

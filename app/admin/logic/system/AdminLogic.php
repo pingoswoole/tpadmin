@@ -10,6 +10,40 @@ use app\common\model\system\SystemAdmin;
  */
 class AdminLogic extends BaseLogic
 {
+    protected $model_class = SystemAdmin::class;
+
+    public function getPageList(int $page = 1, int $pagesize = 20, array $where = [], $sort = '')
+    {
+        try {
+            //code...
+            $count = $this->model
+                ->where($where)
+                ->count();
+            $list = $this->model
+                ->withoutField('password')
+                ->where($where)
+                ->page($page, $pagesize)
+                ->order($sort)
+                ->select();
+            $data = [
+                    'code'  => 0,
+                    'msg'   => '',
+                    'count' => $count,
+                    'data'  => $list,
+                ];
+            return $data;
+        } catch (\Throwable $th) {
+            //throw $th;
+            return [
+                'code'  => -1,
+                'msg'   => $th->getMessage(),
+                'count' => 0,
+                'data'  => [],
+            ];
+        }
+    }
+
+
     /**
      * 登录
      *
@@ -68,5 +102,10 @@ class AdminLogic extends BaseLogic
     {
         session('admin', null);
         return true;
+    }
+
+    public function getAuthList()
+    {
+        return $this->model->getAuthList();
     }
 }

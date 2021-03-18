@@ -7,6 +7,7 @@ namespace app\admin\controller\system;
 
 use app\admin\model\SystemUploadfile;
 use app\admin\base\AdminController;
+use app\admin\logic\system\UploadfileLogic;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;
@@ -23,6 +24,6 @@ class Uploadfile extends AdminController
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->model = new SystemUploadfile();
+        $this->logic = new UploadfileLogic;
     }
 }

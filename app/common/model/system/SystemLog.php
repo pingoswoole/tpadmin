@@ -2,12 +2,10 @@
 
 namespace app\common\model\system;
 
+use app\common\model\BaseModel;
 
-use app\common\model\TimeModel;
-
-class SystemLog extends TimeModel
+class SystemLog extends BaseModel
 {
-
     public function __construct(array $data = [])
     {
         parent::__construct($data);
@@ -24,6 +22,4 @@ class SystemLog extends TimeModel
     {
         return $this->belongsTo(SystemAdmin::class, 'admin_id', 'id');
     }
-
-
 }

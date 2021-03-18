@@ -8,6 +8,7 @@ namespace app\admin\controller\system;
 use app\admin\model\SystemNode;
 use app\admin\service\TriggerService;
 use app\admin\base\AdminController;
+use app\admin\logic\system\NodeLogic;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use EasyAdminCmd\auth\Node as NodeService;
@@ -25,7 +26,7 @@ class Node extends AdminController
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->model = new SystemNode();
+        $this->logic = new NodeLogic;
     }
 
     /**
@@ -37,16 +38,7 @@ class Node extends AdminController
             if (input('selectFields')) {
                 return $this->selectList();
             }
-            $count = $this->model
-                ->count();
-            $list = $this->model
-                ->getNodeTreeList();
-            $data = [
-                'code'  => 0,
-                'msg'   => '',
-                'count' => $count,
-                'data'  => $list,
-            ];
+            $data = $this->logic->getPageList(1, 2000, [], $this->sort);
             return json($data);
         }
         return $this->fetch();
@@ -59,33 +51,12 @@ class Node extends AdminController
     {
         $nodeList = (new NodeService())->getNodelist();
         empty($nodeList) && $this->error('暂无需要更新的系统节点');
-        $model = new SystemNode();
-        try {
-            if ($force == 1) {
-                $updateNodeList = $model->whereIn('node', array_column($nodeList, 'node'))->select();
-                $formatNodeList = array_format_key($nodeList, 'node');
-                foreach ($updateNodeList as $vo) {
-                    isset($formatNodeList[$vo['node']]) && $model->where('id', $vo['id'])->update([
-                        'title'   => $formatNodeList[$vo['node']]['title'],
-                        'is_auth' => $formatNodeList[$vo['node']]['is_auth'],
-                    ]);
-                }
-            }
-            $existNodeList = $model->field('node,title,type,is_auth')->select();
-            foreach ($nodeList as $key => $vo) {
-                foreach ($existNodeList as $v) {
-                    if ($vo['node'] == $v->node) {
-                        unset($nodeList[$key]);
-                        break;
-                    }
-                }
-            }
-            $model->saveAll($nodeList);
-            TriggerService::updateNode();
-        } catch (\Exception $e) {
+        $res = $this->logic->refreshNode($force, $nodeList);
+        if ($res) {
+            $this->success('节点更新成功');
+        } else {
             $this->error('节点更新失败');
         }
-        $this->success('节点更新成功');
     }
 
     /**
@@ -93,18 +64,11 @@ class Node extends AdminController
      */
     public function clearNode()
     {
-        $nodeList = (new NodeService())->getNodelist();
-        $model = new SystemNode();
-        try {
-            $existNodeList = $model->field('id,node,title,type,is_auth')->select()->toArray();
-            $formatNodeList = array_format_key($nodeList, 'node');
-            foreach ($existNodeList as $vo) {
-                !isset($formatNodeList[$vo['node']]) && $model->where('id', $vo['id'])->delete();
-            }
-            TriggerService::updateNode();
-        } catch (\Exception $e) {
+        $res = $this->logic->clearNode();
+        if ($res) {
+            $this->success('节点更新成功');
+        } else {
             $this->error('节点更新失败');
         }
-        $this->success('节点更新成功');
     }
 }

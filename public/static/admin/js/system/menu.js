@@ -129,6 +129,7 @@ define(["jquery", "easy-admin", "treetable", "iconPickerFa", "autocomplete"], fu
             ea.listen();
         },
         add: function () {
+            
             iconPickerFa.render({
                 elem: '#icon',
                 url: PATH_CONFIG.iconLess,

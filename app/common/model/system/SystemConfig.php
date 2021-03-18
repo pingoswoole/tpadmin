@@ -5,10 +5,8 @@
 
 namespace app\common\model\system;
 
+use app\common\model\BaseModel;
 
-use app\common\model\TimeModel;
-
-class SystemConfig extends TimeModel
+class SystemConfig extends BaseModel
 {
-
 }

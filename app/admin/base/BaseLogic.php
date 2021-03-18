@@ -9,6 +9,11 @@ use think\facade\Db;
 use think\facade\Env;
 use think\Model;
 
+use \PhpOffice\PhpSpreadsheet\IOFactory;
+use \PhpOffice\PhpSpreadsheet\Spreadsheet;
+use \PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use \PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
 /**
  * Class AdminLogic
  * @package app\admin\base
@@ -133,11 +138,11 @@ class BaseLogic
         return $this->result(false, '保存失败');
     }
 
-    public function getItem(int $id)
+    public function getItem(array $where = [])
     {
         try {
             //code...
-            return $this->model->find($id);
+            return $this->model->where($where)->find();
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -164,37 +169,58 @@ class BaseLogic
     }
 
      
-    public function export(int $page = 1, int $pagesize = 20, array $where = [])
+    public function export(array $where = [], $noExportFields = [])
     {
         $tableName = $this->model->getName();
         $tableName = CommonTool::humpToLine(lcfirst($tableName));
         $prefix = config('database.connections.mysql.prefix');
         $dbList = Db::query("show full columns from {$prefix}{$tableName}");
-        $header = [];
-        foreach ($dbList as $vo) {
+        $spreadsheet = new Spreadsheet();
+        $sheet       = $spreadsheet->getActiveSheet();
+        //把数据循环写入到excel里
+         
+        foreach ($dbList as $key => $vo) {
             $comment = !empty($vo['Comment']) ? $vo['Comment'] : $vo['Field'];
-            if (!in_array($vo['Field'], $this->noExportFields)) {
+            if (!in_array($vo['Field'], $noExportFields)) {
                 $header[] = [$comment, $vo['Field']];
+                $htitle = chr(65 + $key) . '1';
+                $sheet->setCellValue($htitle, $comment);
             }
         }
+         
         $list = $this->model
             ->where($where)
             ->limit(100000)
             ->order('id', 'desc')
             ->select()
             ->toArray();
-        $fileName = time();
-        return Excel::exportData($list, $header, $fileName, 'xlsx');
+        $fileName = time() . mt_rand(1000, 9999) . ".xlsx";
+        //把数据循环写入到excel里
+        foreach ($list as $k => $row) {
+            foreach ($header as $key => $hrow) {
+                # code...
+                $hkey = chr(65 + $key) . ($k + 2);
+                $sheet->setCellValue($hkey, $row[$hrow[1]]);
+            }
+        }
+        $writer   = new Xlsx($spreadsheet);
+        //这里可以写绝对路径，其他框架到这步就结束了
+        $file = root_path() . 'public/storage/' . $fileName;
+        $writer->save($file);
+        //关闭连接，销毁变量
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+        return download($file, $fileName);
     }
 
     /**
      *  "属性修改"
      */
-    public function modify(int $id, array $data = [])
+    public function modify(array $where = [], array $data = [])
     {
         try {
             //code...
-            $row = $this->model->find($id);
+            $row = $this->model->where($where)->find();
             if (!$row) {
                 return $this->result(false, '数据不存在');
             }

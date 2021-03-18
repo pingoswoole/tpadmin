@@ -4,14 +4,11 @@
 
 namespace app\common\model\system;
 
+use app\admin\constants\MenuConstant;
+use app\common\model\BaseModel;
 
-
-use app\common\constants\MenuConstant;
-use app\common\model\TimeModel;
-
-class SystemMenu extends TimeModel
+class SystemMenu extends BaseModel
 {
-
     protected $deleteTime = 'delete_time';
 
     public function getPidMenuList()
@@ -54,9 +51,7 @@ class SystemMenu extends TimeModel
                 $childList = $this->buildPidMenu($vo['id'], $list, $level);
                 !empty($childList) && $newList = array_merge($newList, $childList);
             }
-
         }
         return $newList;
     }
-
 }

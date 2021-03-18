@@ -4,12 +4,10 @@
 
 namespace app\common\model\system;
 
+use app\common\model\BaseModel;
 
-use app\common\model\TimeModel;
-
-class SystemNode extends TimeModel
+class SystemNode extends BaseModel
 {
-
     public function getNodeTreeList()
     {
         $list = $this->select()->toArray();
@@ -34,6 +32,4 @@ class SystemNode extends TimeModel
         }
         return $newList;
     }
-
-
 }

@@ -42,8 +42,9 @@ trait Curd
     {
         if ($this->request->isAjax()) {
             $post = $this->request->post();
-            $rule = [];
-            $this->validate($post, $rule);
+            if ($this->add_rule) {
+                $this->validate($post, $this->add_rule);
+            }
             $result = $this->logic->add($post);
             if ($result['flag']) {
                 $this->success($result['msg']);
@@ -61,8 +62,9 @@ trait Curd
     {
         if ($this->request->isAjax()) {
             $post = $this->request->post();
-            $rule = [];
-            $this->validate($post, $rule);
+            if ($this->edit_rule) {
+                $this->validate($post, $this->edit_rule);
+            }
             $result = $this->logic->edit($id, $post);
             if ($result) {
                 $this->success($result['msg']);
@@ -70,7 +72,7 @@ trait Curd
                 $this->error($result['msg']);
             }
         }
-        $row = $this->logic->getItem($id);
+        $row = $this->logic->getItem(['id' => $id]);
         empty($row) && $this->error('数据不存在');
         $this->assign('row', $row);
         return $this->fetch();
@@ -94,8 +96,10 @@ trait Curd
      */
     public function export()
     {
+
+        //return download('/www/tp6_layui_admin/public/storage/upload/20210317/ee9644d5df7e00e219e686439b852b54.png', 'my.jpg');
         list($page, $limit, $where) = $this->buildTableParames();
-        return  $this->logic->export($page, $limit, $where);
+        return  $this->logic->export($where, $this->noExportFields);
     }
 
     /**
@@ -104,16 +108,13 @@ trait Curd
     public function modify()
     {
         $post = $this->request->post();
-        $rule = [
-            'id|ID'    => 'require',
-            'field|字段' => 'require',
-            'value|值'  => 'require',
-        ];
-        $this->validate($post, $rule);
+        if ($this->modify_rule) {
+            $this->validate($post, $this->modify_rule);
+        }
         if (!in_array($post['field'], $this->allowModifyFields)) {
             $this->error('该字段不允许修改：' . $post['field']);
         }
-        $result = $this->logic->modify($post['id'], [$post['field'] => $post['value']]);
+        $result = $this->logic->modify(['id' => $post['id']], [$post['field'] => $post['value']]);
         if ($result) {
             $this->success($result['msg']);
         } else {

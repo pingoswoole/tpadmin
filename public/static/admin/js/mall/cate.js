@@ -28,13 +28,15 @@ define(["jquery", "easy-admin"], function ($, ea) {
                     {width: 250, title: '操作', templet: ea.table.tool}
                 ]],
             });
-
+             
             ea.listen();
         },
         add: function () {
-            ea.listen();
+             
+           ea.listen();
         },
         edit: function () {
+            
             ea.listen();
         },
     };

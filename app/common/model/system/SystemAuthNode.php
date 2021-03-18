@@ -4,10 +4,8 @@
 
 namespace app\common\model\system;
 
+use app\common\model\BaseModel;
 
-use app\common\model\TimeModel;
-
-class SystemAuthNode extends TimeModel
+class SystemAuthNode extends BaseModel
 {
-
 }

@@ -9,6 +9,7 @@ use app\admin\model\SystemAuth;
 use app\admin\model\SystemAuthNode;
 use app\admin\service\TriggerService;
 use app\admin\base\AdminController;
+use app\admin\logic\system\AuthLogic;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;
@@ -30,7 +31,8 @@ class Auth extends AdminController
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->model = new SystemAuth();
+         
+        $this->logic = new AuthLogic;
     }
 
     /**
@@ -38,10 +40,10 @@ class Auth extends AdminController
      */
     public function authorize($id)
     {
-        $row = $this->model->find($id);
+        $row = $this->logic->getItem(['id' => $id]);
         empty($row) && $this->error('数据不存在');
         if ($this->request->isAjax()) {
-            $list = $this->model->getAuthorizeNodeListByAdminId($id);
+            $list = $this->logic->getAuthorizeNodeListByAdminId($id);
             $this->success('获取成功', $list);
         }
         $this->assign('row', $row);
@@ -56,25 +58,15 @@ class Auth extends AdminController
         $id = $this->request->post('id');
         $node = $this->request->post('node', "[]");
         $node = json_decode($node, true);
-        $row = $this->model->find($id);
+        $row = $this->logic->getItem(['id' => $id]);
         empty($row) && $this->error('数据不存在');
-        try {
-            $authNode = new SystemAuthNode();
-            $authNode->where('auth_id', $id)->delete();
-            if (!empty($node)) {
-                $saveAll = [];
-                foreach ($node as $vo) {
-                    $saveAll[] = [
-                        'auth_id' => $id,
-                        'node_id' => $vo,
-                    ];
-                }
-                $authNode->saveAll($saveAll);
-            }
-            TriggerService::updateMenu();
-        } catch (\Exception $e) {
+
+        $result = $this->logic->resetList($id, $node);
+        if ($result) {
+            # code...
+            $this->success('保存成功');
+        } else {
             $this->error('保存失败');
         }
-        $this->success('保存成功');
     }
 }

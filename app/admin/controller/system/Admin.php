@@ -9,6 +9,7 @@ use app\admin\model\SystemAdmin;
 use app\admin\service\TriggerService;
 use app\admin\constants\AdminConstant;
 use app\admin\base\AdminController;
+use app\admin\logic\system\AdminLogic;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;
@@ -30,8 +31,8 @@ class Admin extends AdminController
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->model = new SystemAdmin();
-        $this->assign('auth_list', $this->model->getAuthList());
+        $this->logic = new AdminLogic;
+        $this->assign('auth_list', $this->logic->getAuthList());
     }
 
     /**
@@ -44,21 +45,7 @@ class Admin extends AdminController
                 return $this->selectList();
             }
             list($page, $limit, $where) = $this->buildTableParames();
-            $count = $this->model
-                ->where($where)
-                ->count();
-            $list = $this->model
-                ->withoutField('password')
-                ->where($where)
-                ->page($page, $limit)
-                ->order($this->sort)
-                ->select();
-            $data = [
-                'code'  => 0,
-                'msg'   => '',
-                'count' => $count,
-                'data'  => $list,
-            ];
+            $data = $this->logic->getPageList($page, $limit, $where);
             return json($data);
         }
         return $this->fetch();
@@ -76,7 +63,7 @@ class Admin extends AdminController
             $rule = [];
             $this->validate($post, $rule);
             try {
-                $save = $this->model->save($post);
+                $save = $this->logic->add($post);
             } catch (\Exception $e) {
                 $this->error('保存失败');
             }
@@ -90,7 +77,7 @@ class Admin extends AdminController
      */
     public function edit($id)
     {
-        $row = $this->model->find($id);
+        $row = $this->logic->getItem(['id' => $id ]);
         empty($row) && $this->error('数据不存在');
         if ($this->request->isAjax()) {
             $post = $this->request->post();
@@ -101,13 +88,9 @@ class Admin extends AdminController
             if (isset($row['password'])) {
                 unset($row['password']);
             }
-            try {
-                $save = $row->save($post);
-                TriggerService::updateMenu($id);
-            } catch (\Exception $e) {
-                $this->error('保存失败');
-            }
-            $save ? $this->success('保存成功') : $this->error('保存失败');
+            $result = $this->logic->edit($id, $post);
+            TriggerService::updateMenu($id);
+            $result ? $this->success('保存成功') : $this->error('保存失败');
         }
         $row->auth_ids = explode(',', $row->auth_ids);
         $this->assign('row', $row);
@@ -119,7 +102,7 @@ class Admin extends AdminController
      */
     public function password($id)
     {
-        $row = $this->model->find($id);
+        $row = $this->logic->getItem(['id' => $id]);
         empty($row) && $this->error('数据不存在');
         if ($this->request->isAjax()) {
             $post = $this->request->post();
@@ -131,14 +114,18 @@ class Admin extends AdminController
             if ($post['password'] != $post['password_again']) {
                 $this->error('两次密码输入不一致');
             }
-            try {
-                $save = $row->save([
+           
+            $result = $this->logic->modify(
+                ['id' => $id],
+                [
                     'password' => password($post['password']),
-                ]);
-            } catch (\Exception $e) {
-                $this->error('保存失败');
+                ]
+            );
+            if ($result['flag']) {
+                $this->success($result['msg']);
+            } else {
+                $this->error($result['msg']);
             }
-            $save ? $this->success('保存成功') : $this->error('保存失败');
         }
         $row->auth_ids = explode(',', $row->auth_ids);
         $this->assign('row', $row);
@@ -150,20 +137,20 @@ class Admin extends AdminController
      */
     public function delete($id)
     {
-        $row = $this->model->whereIn('id', $id)->select();
-        $row->isEmpty() && $this->error('数据不存在');
+        //$row = $this->model->whereIn('id', $id)->select();
+        //$row->isEmpty() && $this->error('数据不存在');
         $id == AdminConstant::SUPER_ADMIN_ID && $this->error('超级管理员不允许修改');
         if (is_array($id)) {
             if (in_array(AdminConstant::SUPER_ADMIN_ID, $id)) {
                 $this->error('超级管理员不允许修改');
             }
         }
-        try {
-            $save = $row->delete();
-        } catch (\Exception $e) {
-            $this->error('删除失败');
+        $result = $this->logic->delete($id);
+        if ($result['flag']) {
+            $this->success($result['msg']);
+        } else {
+            $this->error($result['msg']);
         }
-        $save ? $this->success('删除成功') : $this->error('删除失败');
     }
 
     /**
@@ -184,12 +171,15 @@ class Admin extends AdminController
         if ($post['id'] == AdminConstant::SUPER_ADMIN_ID && $post['field'] == 'status') {
             $this->error('超级管理员状态不允许修改');
         }
-        $row = $this->model->find($post['id']);
+        $row = $this->logic->getItem([ 'id' => $post['id']]);
         empty($row) && $this->error('数据不存在');
         try {
-            $row->save([
+            $this->logic->modify(
+                [ 'id' => $post['id']],
+                [
                 $post['field'] => $post['value'],
-            ]);
+            ]
+            );
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }

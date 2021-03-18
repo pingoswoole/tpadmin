@@ -28,20 +28,38 @@ class AdminController extends BaseController
     protected $logic;
 
     /**
-     * 当前模型
-     * @Model
-     * @var object
-     */
-    protected $model;
-
-    /**
      * 字段排序
      * @var array
      */
     protected $sort = [
         'id' => 'desc',
     ];
+    /**
+     * 编辑数据规则
+     *
+     * @var array
+     */
+    protected $edit_rule = [
 
+    ];
+    /**
+     * 添加数据规则
+     *
+     * @var array
+     */
+    protected $add_rule = [
+
+    ];
+    /**
+     * 修改字段规则
+     *
+     * @var array
+     */
+    protected $modify_rule = [
+        'id|ID'    => 'require',
+        'field|字段' => 'require',
+        'value|值'  => 'require',
+    ];
     /**
      * 允许修改的字段
      * @var array
@@ -155,7 +173,7 @@ class AdminController extends BaseController
         $excludes = [];
 
         // 判断是否关联查询
-        $tableName = CommonTool::humpToLine(lcfirst($this->model->getName()));
+        //$tableName = CommonTool::humpToLine(lcfirst($this->model->getName()));
 
         foreach ($filters as $key => $val) {
             if (in_array($key, $excludeFields)) {
@@ -164,7 +182,7 @@ class AdminController extends BaseController
             }
             $op = isset($ops[$key]) && !empty($ops[$key]) ? $ops[$key] : '%*%';
             if ($this->relationSearch && count(explode('.', $key)) == 1) {
-                $key = "{$tableName}.{$key}";
+                // $key = "{$tableName}.{$key}";
             }
             switch (strtolower($op)) {
                 case '=':

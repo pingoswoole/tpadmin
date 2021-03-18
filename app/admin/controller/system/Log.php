@@ -4,6 +4,7 @@ namespace app\admin\controller\system;
 
 use app\admin\model\SystemLog;
 use app\admin\base\AdminController;
+use app\admin\logic\system\LogLogic;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;
@@ -18,7 +19,7 @@ class Log extends AdminController
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->model = new SystemLog();
+        $this->logic = new LogLogic;
     }
    
     /**
@@ -37,26 +38,7 @@ class Log extends AdminController
                 : date('Ym');
 
             // todo TP6框架有一个BUG，非模型名与表名不对应时（name属性自定义），withJoin生成的sql有问题
-
-            $count = $this->model
-                ->setMonth($month)
-                ->with('admin')
-                ->where($where)
-                ->select();
-            $list = $this->model
-                ->setMonth($month)
-                ->with('admin')
-                ->where($where)
-                ->page($page, $limit)
-                ->order($this->sort)
-                ->select();
-
-            $data = [
-                'code'  => 0,
-                'msg'   => '',
-                'count' => $count,
-                'data'  => $list,
-            ];
+            $data = $this->logic->getPageList($page, $limit, $where, $this->sort, $month);
             return json($data);
         }
         return $this->fetch();

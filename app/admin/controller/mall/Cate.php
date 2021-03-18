@@ -23,7 +23,6 @@ class Cate extends AdminController
     public function __construct(App $app)
     {
         parent::__construct($app);
-        //$this->model = new MallCate();
         $this->logic = new CateLogic;
     }
 }

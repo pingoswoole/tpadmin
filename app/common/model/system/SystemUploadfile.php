@@ -4,10 +4,8 @@
 
 namespace app\common\model\system;
 
+use app\common\model\BaseModel;
 
-use app\common\model\TimeModel;
-
-class SystemUploadfile extends TimeModel
+class SystemUploadfile extends BaseModel
 {
-
 }

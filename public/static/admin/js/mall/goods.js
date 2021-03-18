@@ -17,6 +17,7 @@ define(["jquery", "easy-admin"], function ($, ea) {
         index: function () {
             ea.table.render({
                 init: init,
+                search: true,
                 toolbar: ['refresh',
                     [{
                         text: '添加',
@@ -40,7 +41,7 @@ define(["jquery", "easy-admin"], function ($, ea) {
                     {field: 'total_stock', width: 100, title: '库存统计'},
                     {field: 'stock', width: 100, title: '剩余库存'},
                     {field: 'virtual_sales', width: 100, title: '虚拟销量'},
-                    {field: 'sales', width: 80, title: '销量'},
+                    {field: 'sales', width: 80, title: '销量', edit:true},
                     {field: 'status', title: '状态', width: 85, selectList: {0: '禁用', 1: '启用'}, templet: ea.table.switch},
                     {field: 'create_time', minWidth: 80, title: '创建时间', search: 'range'},
                     {

@@ -3,7 +3,7 @@
 namespace app\admin\logic\mall;
 
 use app\admin\base\BaseLogic;
-use app\admin\model\MallCate;
+use app\common\model\mall\MallCate;
 
 /**
  * 商品类目逻辑

@@ -8,10 +8,12 @@ namespace app\admin\controller\system;
 use app\admin\model\SystemMenu;
 use app\admin\model\SystemNode;
 use app\admin\service\TriggerService;
-use app\common\constants\MenuConstant;
+use app\admin\constants\MenuConstant;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use app\admin\base\AdminController;
+ 
+use app\admin\logic\system\MenuLogic;
 use think\App;
 
 /**
@@ -31,7 +33,7 @@ class Menu extends AdminController
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->model = new SystemMenu();
+        $this->logic = new MenuLogic;
     }
 
     /**
@@ -43,14 +45,7 @@ class Menu extends AdminController
             if (input('selectFields')) {
                 return $this->selectList();
             }
-            $count = $this->model->count();
-            $list = $this->model->order($this->sort)->select();
-            $data = [
-                'code'  => 0,
-                'msg'   => '',
-                'count' => $count,
-                'data'  => $list,
-            ];
+            $data = $this->logic->getPageList(1, 2000, [], $this->sort);
             return json($data);
         }
         return $this->fetch();
@@ -61,12 +56,8 @@ class Menu extends AdminController
      */
     public function add($id = null)
     {
-        $homeId = $this->model
-            ->where([
-                'pid' => MenuConstant::HOME_PID,
-            ])
-            ->value('id');
-        if ($id == $homeId) {
+        $menu_item = $this->logic->getItem(['pid' => MenuConstant::HOME_PID ]);
+        if ($id == $menu_item['id']) {
             $this->error('首页不能添加子菜单');
         }
         if ($this->request->isAjax()) {
@@ -77,19 +68,17 @@ class Menu extends AdminController
                 'icon|菜单图标'  => 'require',
             ];
             $this->validate($post, $rule);
-            try {
-                $save = $this->model->save($post);
-            } catch (\Exception $e) {
-                $this->error('保存失败');
-            }
-            if ($save) {
-                TriggerService::updateMenu();
+
+            $result = $this->logic->add($post);
+            if ($result['flag']) {
                 $this->success('保存成功');
+                TriggerService::updateMenu();
             } else {
-                $this->error('保存失败');
+                $this->error($result['msg']);
             }
         }
-        $pidMenuList = $this->model->getPidMenuList();
+        $pidMenuList = $this->logic->getPidMenuList();
+       
         $this->assign('id', $id);
         $this->assign('pidMenuList', $pidMenuList);
         return $this->fetch();
@@ -100,7 +89,7 @@ class Menu extends AdminController
      */
     public function edit($id)
     {
-        $row = $this->model->find($id);
+        $row = $this->logic->getItem(['id' => $id]);
         empty($row) && $this->error('数据不存在');
         if ($this->request->isAjax()) {
             $post = $this->request->post();
@@ -110,19 +99,15 @@ class Menu extends AdminController
                 'icon|菜单图标'  => 'require',
             ];
             $this->validate($post, $rule);
-            try {
-                $save = $row->save($post);
-            } catch (\Exception $e) {
-                $this->error('保存失败');
-            }
-            if ($save) {
+            $result = $this->logic->edit($id, $post);
+            if ($result) {
                 TriggerService::updateMenu();
-                $this->success('保存成功');
+                $this->success($result['msg']);
             } else {
-                $this->error('保存失败');
+                $this->error($result['msg']);
             }
         }
-        $pidMenuList = $this->model->getPidMenuList();
+        $pidMenuList = $this->logic->getPidMenuList();
         $this->assign([
             'id'          => $id,
             'pidMenuList' => $pidMenuList,
@@ -134,7 +119,7 @@ class Menu extends AdminController
     /**
      * @NodeAnotation(title="删除")
      */
-    public function delete($id)
+    /* public function delete($id)
     {
         $row = $this->model->whereIn('id', $id)->select();
         empty($row) && $this->error('数据不存在');
@@ -149,7 +134,7 @@ class Menu extends AdminController
         } else {
             $this->error('删除失败');
         }
-    }
+    } */
 
     /**
      * @NodeAnotation(title="属性修改")
@@ -163,30 +148,31 @@ class Menu extends AdminController
             'value|值'  => 'require',
         ];
         $this->validate($post, $rule);
+        if (!in_array($post['field'], $this->allowModifyFields)) {
+            $this->error('该字段不允许修改：' . $post['field']);
+        }
         $row = $this->model->find($post['id']);
         if (!$row) {
             $this->error('数据不存在');
         }
-        if (!in_array($post['field'], $this->allowModifyFields)) {
-            $this->error('该字段不允许修改：' . $post['field']);
-        }
-        $homeId = $this->model
-            ->where([
+        
+        $item = $this->logic
+            ->getItem([
                 'pid' => MenuConstant::HOME_PID,
-            ])
-            ->value('id');
-        if ($post['id'] == $homeId && $post['field'] == 'status') {
+            ]);
+        if ($post['id'] == $item['id'] && $post['field'] == 'status') {
             $this->error('首页状态不允许关闭');
         }
-        try {
-            $row->save([
-                $post['field'] => $post['value'],
-            ]);
-        } catch (\Exception $e) {
-            $this->error($e->getMessage());
+        $result = $this->logic->modify(
+            ['id' => $post['id']],
+            [$post['field'] => $post['value'],]
+        );
+        if ($result['flag']) {
+            TriggerService::updateMenu();
+            $this->success('保存成功');
+        } else {
+            $this->error($result['msg']);
         }
-        TriggerService::updateMenu();
-        $this->success('保存成功');
     }
 
     /**
@@ -195,14 +181,9 @@ class Menu extends AdminController
     public function getMenuTips()
     {
         $node = input('get.keywords');
-        $list = SystemNode::whereLike('node', "%{$node}%")
-            ->field('node,title')
-            ->limit(10)
-            ->select();
-        return json([
-            'code'    => 0,
-            'content' => $list,
-            'type'    => 'success',
-        ]);
+        $limit = 10;
+        $data = $this->logic->getMenuTips($limit, $node);
+        
+        return json($data);
     }
 }

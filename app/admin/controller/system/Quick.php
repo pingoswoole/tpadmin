@@ -7,6 +7,7 @@ namespace app\admin\controller\system;
 
 use app\admin\model\SystemQuick;
 use app\admin\base\AdminController;
+use app\admin\logic\system\QuickLogic;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;
@@ -28,6 +29,6 @@ class Quick extends AdminController
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->model = new SystemQuick();
+        $this->logic = new QuickLogic;
     }
 }

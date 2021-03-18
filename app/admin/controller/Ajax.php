@@ -7,6 +7,7 @@ namespace app\admin\controller;
 
 use app\admin\model\SystemUploadfile;
 use app\admin\base\AdminController;
+use app\admin\logic\system\UploadfileLogic;
 use app\admin\service\MenuService;
 use EasyAdminCmd\upload\Uploadfile;
 use think\db\Query;
@@ -137,25 +138,13 @@ class Ajax extends AdminController
         $page = isset($get['page']) && !empty($get['page']) ? $get['page'] : 1;
         $limit = isset($get['limit']) && !empty($get['limit']) ? $get['limit'] : 10;
         $title = isset($get['title']) && !empty($get['title']) ? $get['title'] : null;
-        $this->model = new SystemUploadfile();
-        $count = $this->model
-            ->where(function (Query $query) use ($title) {
-                !empty($title) && $query->where('original_name', 'like', "%{$title}%");
-            })
-            ->count();
-        $list = $this->model
-            ->where(function (Query $query) use ($title) {
-                !empty($title) && $query->where('original_name', 'like', "%{$title}%");
-            })
-            ->page($page, $limit)
-            ->order($this->sort)
-            ->select();
-        $data = [
-            'code'  => 0,
-            'msg'   => '',
-            'count' => $count,
-            'data'  => $list,
-        ];
+
+        $where = [];
+        if (!empty($title)) {
+            # code...
+            $where[] = ['original_name', 'like', "%{$title}%"];
+        }
+        $data = (new UploadfileLogic)->getPageList($page, $limit, $where, $this->sort);
         return json($data);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace app\admin\controller;
 
-
 use app\admin\model\SystemAdmin;
 use app\admin\model\SystemQuick;
 use app\admin\base\AdminController;
+use app\admin\logic\system\QuickLogic;
 use think\App;
 use think\facade\Env;
 
@@ -31,11 +31,7 @@ class Index extends AdminController
      */
     public function welcome()
     {
-        $quicks = SystemQuick::field('id,title,icon,href')
-            ->where(['status' => 1])
-            ->order('sort', 'desc')
-            ->limit(8)
-            ->select();
+        $quicks =  (new QuickLogic)->getWelcome();
         $this->assign('quicks', $quicks);
         return $this->fetch();
     }
@@ -120,5 +116,4 @@ class Index extends AdminController
         $this->assign('row', $row);
         return $this->fetch();
     }
-
 }

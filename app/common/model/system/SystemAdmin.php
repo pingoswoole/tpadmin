@@ -4,12 +4,10 @@
 
 namespace app\common\model\system;
 
+use app\common\model\BaseModel;
 
-use app\common\model\TimeModel;
-
-class SystemAdmin extends TimeModel
+class SystemAdmin extends BaseModel
 {
-
     protected $deleteTime = 'delete_time';
 
     public function getAuthList()
@@ -19,5 +17,4 @@ class SystemAdmin extends TimeModel
             ->column('title', 'id');
         return $list;
     }
-
 }

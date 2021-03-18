@@ -4,12 +4,10 @@
 
 namespace app\common\model\system;
 
+use app\common\model\BaseModel;
 
-use app\common\model\TimeModel;
-
-class SystemAuth extends TimeModel
+class SystemAuth extends BaseModel
 {
-
     protected $deleteTime = 'delete_time';
 
     /**
@@ -52,5 +50,4 @@ class SystemAuth extends TimeModel
         }
         return $newNodeList;
     }
-
 }

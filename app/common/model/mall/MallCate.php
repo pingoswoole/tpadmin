@@ -2,11 +2,11 @@
 
 // 快速开发框架  @pingo
 
-namespace app\common\model\system;
+namespace app\common\model\mall;
 
 use app\common\model\BaseModel;
 
-class SystemQuick extends BaseModel
+class MallCate extends BaseModel
 {
     protected $deleteTime = 'delete_time';
 }
