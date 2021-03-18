@@ -1,18 +1,20 @@
 {
-    "name": "topthink/think",
-    "description": "the new thinkphp framework",
+    "name": "pingo/tpadmin",
+    "description": "the new framework with thinkphp6 and swoole ",
     "type": "project",
     "keywords": [
         "framework",
         "thinkphp",
-        "ORM"
+        "ORM",
+        "tpadmin",
+        "pingo"
     ],
-    "homepage": "http://thinkphp.cn/",
+    "homepage": "https://github.com/pingoswoole",
     "license": "Apache-2.0",
     "authors": [
         {
-            "name": "liu21st",
-            "email": "liu21st@gmail.com"
+            "name": "pingo",
+            "email": "pingstrong@163.com"
         }
     ],
     "require": {
