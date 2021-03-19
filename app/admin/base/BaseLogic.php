@@ -63,7 +63,7 @@ class BaseLogic
      * @param array $data
      * @return void
      */
-    protected function result($flag = true, $msg = '操作成功', $data = [])
+    protected function result($flag = true, $msg = '操作成功', $data = []):array
     {
         return [
             'flag' => $flag,
@@ -71,8 +71,16 @@ class BaseLogic
             'data' => $data,
         ];
     }
-    
-    public function getPageList(int $page = 1, int $pagesize = 20, array $where = [], $sort = '')
+    /**
+     * 分页数据
+     *
+     * @param integer $page
+     * @param integer $pagesize
+     * @param array $where
+     * @param string $sort
+     * @return array
+     */
+    public function getPageList(int $page = 1, int $pagesize = 20, array $where = [], $sort = ''):array
     {
         try {
             //code...
@@ -102,8 +110,13 @@ class BaseLogic
         }
     }
 
-     
-    public function add(array $post)
+    /**
+     * Undocumented function
+     *
+     * @param array $post
+     * @return void
+     */
+    public function add(array $post): array
     {
         try {
             //code...
@@ -118,8 +131,14 @@ class BaseLogic
         return $this->result(false, '保存失败1');
     }
 
-     
-    public function edit(int $id, array $data = [])
+    /**
+     * 编辑数据
+     *
+     * @param integer $id
+     * @param array $data
+     * @return array
+     */
+    public function edit(int $id, array $data = []):array
     {
         try {
             //code...
@@ -137,7 +156,12 @@ class BaseLogic
         }
         return $this->result(false, '保存失败');
     }
-
+    /**
+     * 获取单条数据
+     *
+     * @param array $where
+     * @return void
+     */
     public function getItem(array $where = [])
     {
         try {
@@ -148,8 +172,14 @@ class BaseLogic
         }
         return [];
     }
-   
-    public function delete($id)
+    
+    /**
+     * 删除数据
+     *
+     * @param [type] $id
+     * @return array
+     */
+    public function delete($id):array
     {
         try {
             //code...
@@ -168,7 +198,13 @@ class BaseLogic
         return $this->result(false, '删除失败');
     }
 
-     
+    /**
+     * 导出数据
+     *
+     * @param array $where
+     * @param array $noExportFields
+     * @return void
+     */
     public function export(array $where = [], $noExportFields = [])
     {
         $tableName = $this->model->getName();
@@ -213,10 +249,15 @@ class BaseLogic
         return download($file, $fileName);
     }
 
+   
     /**
-     *  "属性修改"
+     * 属性修改
+     *
+     * @param array $where
+     * @param array $data
+     * @return array
      */
-    public function modify(array $where = [], array $data = [])
+    public function modify(array $where = [], array $data = []):array
     {
         try {
             //code...

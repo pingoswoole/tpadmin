@@ -1,4 +1,4 @@
-ThinkPHP 6.0
+ThinkPHP 6 + Swoole4
 ===============
 
 > 运行环境要求PHP7.2+。
@@ -21,32 +21,35 @@ ThinkPHP 6.0
 ## 安装
 
 ~~~
-composer create-project topthink/think tp 6.0.*-dev
+composer create-project pingo/tpadmin tpadmin
 ~~~
-
 如果需要更新框架使用
 ~~~
-composer update topthink/framework
+composer update pingo/tpadmin
 ~~~
+## 项目架构
 
-## 文档
+## 开发规范
 
-[完全开发手册](https://www.kancloud.cn/manual/thinkphp6_0/content)
+## 开发文档
+
+[thinkphp开发手册](https://www.kancloud.cn/manual/thinkphp6_0/content)
+[swoole开发手册](https://wiki.swoole.com/)
+[layerui开发手册](https://www.layui.com/doc/)
 
 ## 参与开发
 
-请参阅 [ThinkPHP 核心框架包](https://github.com/top-think/framework)。
+联系开发者pingo。
+wechat: pingstrong
 
 ## 版权信息
 
-ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
+遵循Apache2开源协议发布，并提供免费使用。
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-版权所有Copyright © 2006-2019 by ThinkPHP (http://thinkphp.cn)
+版权所有Copyright © 2006-2019 by Tpadmin@pingo
 
 All rights reserved。
-
-ThinkPHP® 商标和著作权所有者为上海顶想信息科技有限公司。
 
 更多细节参阅 [LICENSE.txt](LICENSE.txt)

@@ -23,6 +23,7 @@ class Curd extends Command
             ->addOption('table', 't', Option::VALUE_REQUIRED, '主表名', null)
             ->addOption('controllerFilename', 'c', Option::VALUE_REQUIRED, '控制器文件名', null)
             ->addOption('modelFilename', 'm', Option::VALUE_REQUIRED, '主表模型文件名', null)
+            ->addOption('logicFilename', 'l', Option::VALUE_REQUIRED, '逻辑处理文件名', null)
             #
             ->addOption('checkboxFieldSuffix', null, Option::VALUE_REQUIRED | Option::VALUE_IS_ARRAY, '复选框字段后缀', null)
             ->addOption('radioFieldSuffix', null, Option::VALUE_REQUIRED | Option::VALUE_IS_ARRAY, '单选框字段后缀', null)
@@ -54,6 +55,7 @@ class Curd extends Command
         $table = $input->getOption('table');
         $controllerFilename = $input->getOption('controllerFilename');
         $modelFilename = $input->getOption('modelFilename');
+        $logicFilename = $input->getOption('logicFilename');
 
         $checkboxFieldSuffix = $input->getOption('checkboxFieldSuffix');
         $radioFieldSuffix = $input->getOption('radioFieldSuffix');
@@ -101,6 +103,8 @@ class Curd extends Command
 
             !empty($controllerFilename) && $build = $build->setControllerFilename($controllerFilename);
             !empty($modelFilename) && $build = $build->setModelFilename($modelFilename);
+            !empty($logicFilename) && $build = $build->setLogicFilename($logicFilename);
+            
 
             !empty($checkboxFieldSuffix) && $build = $build->setCheckboxFieldSuffix($checkboxFieldSuffix);
             !empty($radioFieldSuffix) && $build = $build->setRadioFieldSuffix($radioFieldSuffix);

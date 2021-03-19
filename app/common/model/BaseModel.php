@@ -5,13 +5,12 @@
 
 namespace app\common\model;
 
-
 use think\Model;
 use think\model\concern\SoftDelete;
 
 /**
  *  BaseModel模型
- * Class TimeModel
+ * Class BaseModel
  * @package app\common\model
  */
 class BaseModel extends Model
@@ -40,5 +39,4 @@ class BaseModel extends Model
      */
     use SoftDelete;
     protected $deleteTime = false;
-
 }
