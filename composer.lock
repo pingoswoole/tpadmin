@@ -2047,16 +2047,16 @@
         },
         {
             "name": "pingoswoole/easyadmincmd",
-            "version": "1.0.3",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pingoswoole/easyadmincmd.git",
-                "reference": "f98a778d2f74778f96d15f13eb0e580c915961d7"
+                "reference": "6823fde59bd49d57f811e94f67b30c79956bedfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pingoswoole/easyadmincmd/zipball/f98a778d2f74778f96d15f13eb0e580c915961d7",
-                "reference": "f98a778d2f74778f96d15f13eb0e580c915961d7",
+                "url": "https://api.github.com/repos/pingoswoole/easyadmincmd/zipball/6823fde59bd49d57f811e94f67b30c79956bedfe",
+                "reference": "6823fde59bd49d57f811e94f67b30c79956bedfe",
                 "shasum": ""
             },
             "require": {
@@ -2082,9 +2082,9 @@
             "homepage": "http://www.github.com/pingoswoole/",
             "support": {
                 "issues": "https://github.com/pingoswoole/easyadmincmd/issues",
-                "source": "https://github.com/pingoswoole/easyadmincmd/tree/1.0.3"
+                "source": "https://github.com/pingoswoole/easyadmincmd/tree/1.0.4"
             },
-            "time": "2021-03-19T03:58:57+00:00"
+            "time": "2021-03-19T04:18:17+00:00"
         },
         {
             "name": "psr/cache",
