@@ -12,7 +12,7 @@ class LogLogic extends BaseLogic
 {
     protected $model_class = SystemLog::class;
 
-    public function getPageList(int $page = 1, int $pagesize = 20, array $where = [], $sort = '', $month = '')
+    public function getPageList(int $page = 1, int $pagesize = 20, array $where = [], $sort = '', $month = ''):array
     {
         try {
             //code...

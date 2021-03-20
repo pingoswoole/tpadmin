@@ -26,5 +26,19 @@ return [
             'serialize'  => [],
         ],
         // 更多的缓存连接
+        // redis缓存
+        'redis'   =>  [
+            // 驱动方式
+            'type'      => 'redis',
+            // 服务器地址
+            'host'       => Env::get('redis.host', 'redis'),
+            'port'       => Env::get('redis.port', 6379),
+            'password'   => Env::get('redis.auth', ''),
+            'select'     => Env::get('redis.index', 0),
+            'timeout'    => 5,
+            'expire'     => 0,
+            'persistent' => false,
+            'prefix'     => '',
+        ],
     ],
 ];

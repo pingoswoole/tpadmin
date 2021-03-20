@@ -12,7 +12,7 @@ class AdminLogic extends BaseLogic
 {
     protected $model_class = SystemAdmin::class;
 
-    public function getPageList(int $page = 1, int $pagesize = 20, array $where = [], $sort = '')
+    public function getPageList(int $page = 1, int $pagesize = 20, array $where = [], $sort = ''):array
     {
         try {
             //code...

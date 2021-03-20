@@ -36,9 +36,7 @@ class Index extends AdminController
 
     public function test()
     {
-        
-        
+        Db::table("wp_test")->insert(['title' => time()]);
         return __CLASS__;
     }
 }
- 

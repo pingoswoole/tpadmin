@@ -8,10 +8,9 @@ use think\facade\Cache;
 
 class ConfigService
 {
-
     public static function getVersion()
     {
-        $version = Cache('version');
+        $version = cache('version');
         if (empty($version)) {
             $version = sysconfig('site', 'site_version');
             cache('site_version', $version);
@@ -19,5 +18,4 @@ class ConfigService
         }
         return $version;
     }
-
 }

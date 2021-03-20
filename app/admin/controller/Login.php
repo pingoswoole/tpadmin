@@ -4,7 +4,6 @@
 
 namespace app\admin\controller;
 
-
 use app\admin\model\SystemAdmin;
 use app\admin\base\AdminController;
 use app\admin\logic\system\AdminLogic;
@@ -29,7 +28,6 @@ class Login extends AdminController
             $adminModuleName = config('app.admin_alias_name');
             $this->success('已登录，无需再次登录', [], __url("@{$adminModuleName}"));
         }
-         
     }
 
     /**
@@ -50,7 +48,7 @@ class Login extends AdminController
             $captcha == 1 && $rule['captcha|验证码'] = 'require|captcha';
             $this->validate($post, $rule);
             $login_flag = (new AdminLogic)->login($post['username'], $post['password'], $post['keep_login']);
-            if(true !== $login_flag){
+            if (true !== $login_flag) {
                 return $this->error($login_flag);
             }
             $this->success('登录成功');

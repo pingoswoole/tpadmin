@@ -4,7 +4,6 @@
 
 namespace app\admin\middleware;
 
-
 use app\admin\service\ConfigService;
 use app\admin\constants\AdminConstant;
 use think\App;
@@ -13,7 +12,6 @@ use think\facade\View;
 
 class ViewInit
 {
-
     public function handle($request, \Closure $next)
     {
         list($thisModule, $thisController, $thisAction) = [app('http')->getName(), Request::controller(), $request->action()];
@@ -33,13 +31,11 @@ class ViewInit
             'thisControllerJsPath' => "{$thisControllerJsPath}",
             'autoloadJs'           => $autoloadJs,
             'isSuperAdmin'         => $isSuperAdmin,
-            'version'              => env('app_debug') ? time() : ConfigService::getVersion(),
+            'version'              => env('app_debug', false) ? time() : ConfigService::getVersion(),
         ];
 
         View::assign($data);
         $request->adminModuleName = $adminModuleName;
         return $next($request);
     }
-
-
 }
