@@ -10,10 +10,12 @@ use app\admin\model\SystemAdmin;
 use app\admin\service\TriggerService;
 use app\common\constants\AdminConstant;
 use app\admin\base\AdminController;
+use app\listener\Sms;
 use EasyAdminCmd\annotation\ControllerAnnotation;
 use EasyAdminCmd\annotation\NodeAnotation;
 use think\App;
 use think\facade\Db;
+use think\facade\Event;
 
 /**
  * Class Admin
@@ -36,7 +38,9 @@ class Index extends AdminController
 
     public function test()
     {
-        Db::table("wp_test")->insert(['title' => time()]);
+        // Db::table("wp_test")->insert(['title' => time()]);
+         
+        //Event::trigger("Sms");
         return __CLASS__;
     }
 }
